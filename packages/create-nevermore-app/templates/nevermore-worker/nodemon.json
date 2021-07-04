@@ -1,0 +1,6 @@
+{
+    "watch": ["widgets", "worker"],
+    "ext": "js,json,jsx",
+    "ignore": ["src/**/*.spec.ts"],
+    "exec": "npm run deploy-dev"
+  }

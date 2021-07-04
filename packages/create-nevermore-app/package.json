@@ -1,0 +1,30 @@
+{
+  "name": "create-nevermore-app",
+  "version": "0.0.4",
+  "description": "Nevermore's worker generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nevermore",
+    "nevermore-fms",
+    "fms",
+    "frc",
+    "first",
+    "generator"
+  ],
+  "author": "Chase MacDonnell <macdonnell.chase@gmail.com>",
+  "license": "ISC",
+  "engines": {
+    "node": "^10.12.0 || >=12.0.0"
+  },
+  "bin": {
+    "create-nevermore-app": "./src/index.js"
+  },
+  "dependencies": {
+    "fs-extra": "^10.0.0",
+    "inquirer": "^8.1.1",
+    "package-name-regex": "^2.0.2"
+  }
+}
