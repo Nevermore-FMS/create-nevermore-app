@@ -404,7 +404,10 @@ async function launch_nevermore() {
       throw "Unsupported Platform";
   }
 
-  execSync("chmod +x " + dest_file);
+  try {
+    execSync("chmod +x " + dest_file);
+  } catch (_) {}
+  
   nevermore_process = spawn(dest_file, ["-w", "devtools"]);
 
   nevermore_process.on("error", (err) => {
