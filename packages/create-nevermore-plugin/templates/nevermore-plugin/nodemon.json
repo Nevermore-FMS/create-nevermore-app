@@ -1,0 +1,5 @@
+{
+    "watch": ["widgets", "plugin"],
+    "ext": "js,json,jsx",
+    "exec": "npm run deploy-dev"
+  }

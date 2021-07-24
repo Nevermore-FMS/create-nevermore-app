@@ -7,12 +7,10 @@ const path = require("path");
 const packageNameRegex = require("package-name-regex");
 const fse = require("fs-extra");
 const fs = require("fs").promises;
-const { exec } = require('child_process');
+const { exec } = require("child_process");
 
-const MODE_0666 = parseInt("0666", 8);
-const MODE_0755 = parseInt("0755", 8);
-const JS_TEMPLATE_DIR = path.join(__dirname, "..", "templates", "nevermore-worker");
-const TS_TEMPLATE_DIR = path.join(__dirname, "..", "templates", "nevermore-worker-ts");
+const JS_TEMPLATE_DIR = path.join(__dirname, "..", "templates", "nevermore-plugin");
+const TS_TEMPLATE_DIR = path.join(__dirname, "..", "templates", "nevermore-plugin-ts");
 
 inquirer
   .prompt([
@@ -20,7 +18,7 @@ inquirer
       type: "input",
       name: "name",
       message:
-        "What would you like to name this worker? (Must abide by NPM Package naming scheme)\n>",
+        "What would you like to name this plugin? (Must abide by NPM Package naming scheme)\n>",
       validate(value) {
         const pass = packageNameRegex.test(value);
         if (pass) {
@@ -34,7 +32,31 @@ inquirer
       type: "input",
       name: "description",
       message:
-        "Write a quick description of your worker to tell users what to expect:"
+        "Write a quick description of your plugin to tell users what to expect:\n>"
+    },
+    {
+      type: "input",
+      name: "author",
+      message:
+        "Enter the name of this plugin's author:\n>"
+    },
+    {
+      type: "input",
+      name: "email",
+      message:
+        "Enter the contact email for this plugin (Leave blank if not used):\n>"
+    },
+    {
+      type: "input",
+      name: "url",
+      message:
+        "Enter the website of this plugin (Leave blank if not used):\n>"
+    },
+    {
+      type: "list",
+      name: "pluginType",
+      message: "What type of plugin is this?",
+      choices: ["GAME", "NETWORK_CONFIGURATOR", "GENERIC"]
     },
     {
       type: "list",
@@ -45,7 +67,7 @@ inquirer
 		{
       type: "confirm",
       name: "runNPMInstall",
-      message: "Would you like to run `npm install` after this worker is created?"
+      message: "Would you like to run `npm install` after this plugin is created?"
     }
   ])
   .then((answers) => {
@@ -58,7 +80,7 @@ inquirer
 					console.error("Couldn't copy TS template! Error:")
 					console.error(err); 
 				} else {
-					await writeJSONToFolder(outPath, answers.name, answers.description, isTypescript, answers.runNPMInstall);
+					await writeJSONToFolder(outPath, answers.name, answers.description, answers.author, answers.email, answers.url, answers.pluginType, isTypescript, answers.runNPMInstall);
 				}
 			});
 		} else {
@@ -67,18 +89,18 @@ inquirer
 					console.error("Couldn't copy JS template! Error:")
 					console.error(err); 
 				} else {
-					await writeJSONToFolder(outPath, answers.name, answers.description, isTypescript, answers.runNPMInstall);
+					await writeJSONToFolder(outPath, answers.name, answers.description, answers.author, answers.email, answers.url, answers.pluginType, isTypescript, answers.runNPMInstall);
 				}
 			});
 		}
   });
 
-async function writeJSONToFolder(outPath, packageName, description, isTypescript, runNPMInstall) {
+async function writeJSONToFolder(outPath, packageName, description, author, email, url, pluginType, isTypescript, runNPMInstall) {
 	let nevermoreJSONPath = path.join(outPath, "nevermore.json");
 	let packageJSONPath = path.join(outPath, "package.json")
 
-	await fs.writeFile(nevermoreJSONPath, generateNevermoreJSON(packageName, description));
-	await fs.writeFile(packageJSONPath, generatePackageJSON(packageName, description, isTypescript));
+	await fs.writeFile(nevermoreJSONPath, generateNevermoreJSON(packageName, author, email, url, pluginType));
+	await fs.writeFile(packageJSONPath, generatePackageJSON(packageName, author, description, isTypescript));
 
 	if (runNPMInstall) {
 		let child = exec("npm i --cwd " + outPath + " --prefix " + outPath);
@@ -89,7 +111,7 @@ async function writeJSONToFolder(outPath, packageName, description, isTypescript
 
 		child.on('error', function (err) {
 			console.log(err)
-		})
+		});
 
 		child.stdout.on('data', (data) => {
 			console.log(data);
@@ -102,28 +124,36 @@ async function writeJSONToFolder(outPath, packageName, description, isTypescript
 }
 
 
-function generateNevermoreJSON(packageName, description) {
+function generateNevermoreJSON(name, author, email, url, pluginType) {
   return JSON.stringify({
-    name: packageName,
-    description: description,
-    workerPath: "dist/worker.bundle.js",
-    graphqlEndpoint: "http://localhost:8000/graphql",
+    name,
+    author,
+    email,
+    url,
+    pluginType,
+    pluginPath: "dist/plugin.bundle.js",
+    frontendPath: "dist/frontend.bundle.js",
+    hasFrontend: true,
     enabled: true
   }, null, "\t");
 }
 
-function generatePackageJSON(packageName, description, isTypescript) {
+function generatePackageJSON(name, author, description, isTypescript) {
   if (isTypescript) {
     return JSON.stringify({
-      name: packageName,
+      name,
       version: "0.0.0",
 			description: description,
+      author,
       private: true,
       scripts: {
-        "build-dev": "webpack --mode=development",
-        build: "webpack --mode=production",
+        "build-js-dev": "webpack --mode=development",
+        "build-js": "webpack --mode=production",
         deploy: "npm run build && nevermore-scripts deploy",
         "deploy-dev": "npm run build-dev && nevermore-scripts deploy",
+        "run-local": "npm run build-dev && nevermore-scripts run",
+        "build": "npm run build-js && cp nevermore.json dist/nevermore.json && bestzip plugin.zip dist/*",
+        "log": "nevermore-scripts log",
         develop: "nodemon",
       },
       devDependencies: {
@@ -131,6 +161,7 @@ function generatePackageJSON(packageName, description, isTypescript) {
         "@nevermore-fms/scripts": "^0.0.1",
         "@nevermore-fms/worker-types": "^0.0.1",
         nodemon: "2.0.4",
+        bestzip: "2.2.0",
         "ts-loader": "^9.2.3",
         typescript: "^4.3.4",
         webpack: "^5.42.0",
@@ -142,14 +173,18 @@ function generatePackageJSON(packageName, description, isTypescript) {
     }, null, "\t");
   } else {
     return JSON.stringify({
-      name: packageName,
+      name,
       version: "0.0.0",
+      author,
       private: true,
       scripts: {
-        "build-dev": "webpack --mode=development",
-        build: "webpack --mode=production",
+        "build-js-dev": "webpack --mode=development",
+        "build-js": "webpack --mode=production",
         deploy: "npm run build && nevermore-scripts deploy",
         "deploy-dev": "npm run build-dev && nevermore-scripts deploy",
+        "run-local": "npm run build-dev && nevermore-scripts run",
+        "build": "npm run build-js && cp nevermore.json dist/nevermore.json && bestzip plugin.zip dist/*",
+        "log": "nevermore-scripts log",
         develop: "nodemon",
       },
       devDependencies: {
@@ -157,6 +192,7 @@ function generatePackageJSON(packageName, description, isTypescript) {
         "@nevermore-fms/scripts": "^0.0.1",
         "@nevermore-fms/worker-types": "^0.0.1",
         nodemon: "2.0.4",
+        bestzip: "2.2.0",
         webpack: "^5.42.0",
         "webpack-cli": "^4.7.2",
       },

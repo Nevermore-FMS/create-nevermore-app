@@ -2,8 +2,8 @@ const path = require('path');
 
 module.exports = {
   entry: {
-      worker: './worker/index.js',
-      frontend: './widgets/index.jsx'
+      plugin: './plugin/index.js',
+      widgets: './widgets/index.jsx'
   },
   devtool: "eval-source-map",
   externals: {

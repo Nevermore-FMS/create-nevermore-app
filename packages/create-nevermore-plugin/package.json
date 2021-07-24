@@ -1,8 +1,8 @@
 {
-  "name": "create-nevermore-app",
+  "name": "@nevermore-fms/create-plugin",
   "version": "0.0.4",
-  "description": "Nevermore's worker generator",
-  "main": "index.js",
+  "description": "Nevermore's plugin generator",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,7 +20,8 @@
     "node": "^10.12.0 || >=12.0.0"
   },
   "bin": {
-    "create-nevermore-app": "./src/index.js"
+    "create-nevermore-plugin": "./src/index.js",
+    "@nevermore-fms/create-plugin": "./src/index.js"
   },
   "dependencies": {
     "fs-extra": "^10.0.0",
