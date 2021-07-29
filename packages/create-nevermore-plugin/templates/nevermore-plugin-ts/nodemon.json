@@ -3,6 +3,6 @@
     "widgets",
     "plugin"
   ],
-  "ext": "js,json,jsx",
+  "ext": "ts,json,tsx",
   "exec": "npm run run-local"
 }

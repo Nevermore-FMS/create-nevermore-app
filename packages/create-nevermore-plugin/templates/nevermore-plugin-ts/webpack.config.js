@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   entry: {
       plugin: './plugin/index.ts',
-      widgets: './widgets/index.tsx'
+      frontend: './frontend/index.tsx'
   },
   devtool: "eval-source-map",
   externals: {

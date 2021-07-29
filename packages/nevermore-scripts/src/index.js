@@ -23,15 +23,15 @@ try {
   mkdirSync(bin_path);
 } catch(_) {}
 
-const windows_download_url = "https://github.com/Nevermore-FMS/nevermore-fms/releases/download/v0.1.1/nevermore-fms-windows-amd64-developer.exe";
+const windows_download_url = "https://github.com/Nevermore-FMS/nevermore-fms/releases/download/v0.1.2/nevermore-fms-windows-amd64-developer.exe";
 const windows_bin_path = path.join(__dirname, "..", "bin", "nevermore-windows.exe");
-const windows_hash = "b2413d9d2c4b2c6bfc3d231d85494a306d97c909df0bf479b68a7b341171ef3a";
-const linux_download_url = "https://github.com/Nevermore-FMS/nevermore-fms/releases/download/v0.1.1/nevermore-fms-linux-amd64-developer";
+const windows_hash = "f3c9bbec01bdce0c9e460d195299cba9177f2fcdc707d359b6af84e1b952af80";
+const linux_download_url = "https://github.com/Nevermore-FMS/nevermore-fms/releases/download/v0.1.2/nevermore-fms-linux-amd64-developer";
 const linux_bin_path = path.join(__dirname, "..", "bin", "nevermore-linux");
-const linux_hash = "dc0d96551a985679dd510f049216674d0ca9bf2f76df202e6745d33826801e64";
-const osx_download_url = "https://github.com/Nevermore-FMS/nevermore-fms/releases/download/v0.1.1/nevermore-fms-osx-amd64-developer";
+const linux_hash = "405638eb00fc0e8d2bab3020bd9685c2ad2709eb622ba8e637d48cb1082ed232";
+const osx_download_url = "https://github.com/Nevermore-FMS/nevermore-fms/releases/download/v0.1.2/nevermore-fms-osx-amd64-developer";
 const osx_bin_path = path.join(__dirname, "..", "bin", "nevermore-osx");
-const osx_hash = "a2cd2911066236f2aa67829bb0928cf90a392734d30ca27ccdf1fd2a8141cf24";
+const osx_hash = "96495a1e8338fc793c9c95613d5fbe8f5b1ea05ec03ec81b6b02962b703a9fb1";
 
 let unsubscribe = function () {};
 let nevermore_process = null;
@@ -407,7 +407,7 @@ async function launch_nevermore() {
   try {
     execSync("chmod +x " + dest_file);
   } catch (_) {}
-  
+
   nevermore_process = spawn(dest_file, ["-w", "devtools"]);
 
   nevermore_process.on("error", (err) => {

@@ -1,0 +1,13 @@
+{
+	"extends": "../jsconfig.main.json",
+	"compilerOptions": {
+		"rootDir": "../",
+		"outDir": "../dist/",
+		"types": [
+			"@nevermore-fms/plugin-types"
+		],
+		"lib": [
+			"es2017"
+		]
+	}
+}

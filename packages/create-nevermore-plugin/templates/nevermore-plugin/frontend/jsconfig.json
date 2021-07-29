@@ -1,0 +1,8 @@
+{
+	"extends": "../jsconfig.main.json",
+	"compilerOptions": {
+		"rootDir": "../",
+		"outDir": "../dist/",
+		"jsx": "react"
+	}
+}

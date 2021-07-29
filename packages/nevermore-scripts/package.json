@@ -1,6 +1,6 @@
 {
   "name": "@nevermore-fms/scripts",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "Scripts made to improve the workflow of Nevermore Plugin Developers.",
   "main": "src/index.js",
   "scripts": {
