@@ -143,7 +143,7 @@ function generatePackageJSON(name, author, description, isTypescript) {
     return JSON.stringify({
       name,
       version: "0.0.0",
-			description: description,
+      description: description,
       author,
       private: true,
       scripts: {
