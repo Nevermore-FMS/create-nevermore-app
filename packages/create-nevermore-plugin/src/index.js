@@ -56,7 +56,13 @@ inquirer
       type: "list",
       name: "pluginType",
       message: "What type of plugin is this?",
-      choices: ["GAME", "NETWORK_CONFIGURATOR", "GENERIC"]
+      choices: ["GENERIC", "GAME", "NETWORK_CONFIGURATOR"]
+    },
+    {
+      type: "checkbox",
+      name: "permissions",
+      message: "What permissions would you like to include? (This can be changed later)",
+      choices: ["database", "network", "endpoint", "socket", "teams", "scores", "schedules"]
     },
     {
       type: "list",
@@ -74,13 +80,15 @@ inquirer
     let isTypescript = answers.language == "Typescript (TS)";
 		let outPath = path.join(".", answers.name)
 
+    const writeArgs = [outPath, answers.name, answers.description, answers.author, answers.email, answers.url, answers.pluginType, answers.permissions, isTypescript, answers.runNPMInstall]
+
 		if (isTypescript) {
 			fse.copy(TS_TEMPLATE_DIR, outPath, async function (err) {
 				if (err) {
 					console.error("Couldn't copy TS template! Error:")
 					console.error(err); 
 				} else {
-					await writeJSONToFolder(outPath, answers.name, answers.description, answers.author, answers.email, answers.url, answers.pluginType, isTypescript, answers.runNPMInstall);
+					await writeJSONToFolder(...writeArgs);
 				}
 			});
 		} else {
@@ -89,17 +97,17 @@ inquirer
 					console.error("Couldn't copy JS template! Error:")
 					console.error(err); 
 				} else {
-					await writeJSONToFolder(outPath, answers.name, answers.description, answers.author, answers.email, answers.url, answers.pluginType, isTypescript, answers.runNPMInstall);
+					await writeJSONToFolder(...writeArgs);
 				}
 			});
 		}
   });
 
-async function writeJSONToFolder(outPath, packageName, description, author, email, url, pluginType, isTypescript, runNPMInstall) {
+async function writeJSONToFolder(outPath, packageName, description, author, email, url, pluginType, permissions, isTypescript, runNPMInstall) {
 	let nevermoreJSONPath = path.join(outPath, "nevermore.json");
 	let packageJSONPath = path.join(outPath, "package.json")
 
-	await fs.writeFile(nevermoreJSONPath, generateNevermoreJSON(packageName, author, email, url, pluginType));
+	await fs.writeFile(nevermoreJSONPath, generateNevermoreJSON(packageName, author, email, url, pluginType, permissions));
 	await fs.writeFile(packageJSONPath, generatePackageJSON(packageName, author, description, isTypescript));
 
 	if (runNPMInstall) {
@@ -124,13 +132,14 @@ async function writeJSONToFolder(outPath, packageName, description, author, emai
 }
 
 
-function generateNevermoreJSON(name, author, email, url, pluginType) {
+function generateNevermoreJSON(name, author, email, url, pluginType, permissions) {
   return JSON.stringify({
     name,
     author,
     email,
     url,
     pluginType,
+    permissions,
     pluginPath: "dist/plugin.bundle.js",
     frontendPath: "dist/frontend.bundle.js",
     hasFrontend: true,
