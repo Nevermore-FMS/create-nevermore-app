@@ -70,7 +70,7 @@ inquirer
       message: "What language do you want to use?",
       choices: ["Javascript (JS)", "Typescript (TS)"],
     },
-		{
+    {
       type: "confirm",
       name: "runNPMInstall",
       message: "Would you like to run `npm install` after this plugin is created?"
@@ -78,57 +78,57 @@ inquirer
   ])
   .then((answers) => {
     let isTypescript = answers.language == "Typescript (TS)";
-		let outPath = path.join(".", answers.name)
+    let outPath = path.join(".", answers.name)
 
     const writeArgs = [outPath, answers.name, answers.description, answers.author, answers.email, answers.url, answers.pluginType, answers.permissions, isTypescript, answers.runNPMInstall]
 
-		if (isTypescript) {
-			fse.copy(TS_TEMPLATE_DIR, outPath, async function (err) {
-				if (err) {
-					console.error("Couldn't copy TS template! Error:")
-					console.error(err); 
-				} else {
-					await writeJSONToFolder(...writeArgs);
-				}
-			});
-		} else {
-			fse.copy(JS_TEMPLATE_DIR, outPath, async function (err) {
-				if (err) {
-					console.error("Couldn't copy JS template! Error:")
-					console.error(err); 
-				} else {
-					await writeJSONToFolder(...writeArgs);
-				}
-			});
-		}
+    if (isTypescript) {
+      fse.copy(TS_TEMPLATE_DIR, outPath, async function (err) {
+        if (err) {
+          console.error("Couldn't copy TS template! Error:")
+          console.error(err);
+        } else {
+          await writeJSONToFolder(...writeArgs);
+        }
+      });
+    } else {
+      fse.copy(JS_TEMPLATE_DIR, outPath, async function (err) {
+        if (err) {
+          console.error("Couldn't copy JS template! Error:")
+          console.error(err);
+        } else {
+          await writeJSONToFolder(...writeArgs);
+        }
+      });
+    }
   });
 
 async function writeJSONToFolder(outPath, packageName, description, author, email, url, pluginType, permissions, isTypescript, runNPMInstall) {
-	let nevermoreJSONPath = path.join(outPath, "nevermore.json");
-	let packageJSONPath = path.join(outPath, "package.json")
+  let nevermoreJSONPath = path.join(outPath, "nevermore.json");
+  let packageJSONPath = path.join(outPath, "package.json")
 
-	await fs.writeFile(nevermoreJSONPath, generateNevermoreJSON(packageName, author, email, url, pluginType, permissions));
-	await fs.writeFile(packageJSONPath, generatePackageJSON(packageName, author, description, isTypescript));
+  await fs.writeFile(nevermoreJSONPath, generateNevermoreJSON(packageName, author, email, url, pluginType, permissions));
+  await fs.writeFile(packageJSONPath, generatePackageJSON(packageName, author, description, isTypescript));
 
-	if (runNPMInstall) {
-		let child = exec("npm i --cwd " + outPath + " --prefix " + outPath);
+  if (runNPMInstall) {
+    let child = exec("npm i --cwd " + outPath + " --prefix " + outPath);
 
-		child.on('exit', function (code, signal) {
-			console.log(`The worker ${packageName} has been created at "${outPath}"!`)
-		});
+    child.on('exit', function (code, signal) {
+      console.log(`The worker ${packageName} has been created at "${outPath}"!`)
+    });
 
-		child.on('error', function (err) {
-			console.log(err)
-		});
+    child.on('error', function (err) {
+      console.log(err)
+    });
 
-		child.stdout.on('data', (data) => {
-			console.log(data);
-		});
-		
-		child.stderr.on('data', (data) => {
-			console.error(data);
-		});
-	}
+    child.stdout.on('data', (data) => {
+      console.log(data);
+    });
+
+    child.stderr.on('data', (data) => {
+      console.error(data);
+    });
+  }
 }
 
 
