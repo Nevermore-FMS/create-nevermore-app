@@ -2,15 +2,23 @@
 
 "use strict";
 
+const eaobird = require('./eao_bird_circle.js')
 const inquirer = require("inquirer");
 const path = require("path");
 const packageNameRegex = require("package-name-regex");
 const fse = require("fs-extra");
-const fs = require("fs").promises;
+const fs = require("fs");
 const { exec } = require("child_process");
 
 const JS_TEMPLATE_DIR = path.join(__dirname, "..", "templates", "nevermore-plugin");
 const TS_TEMPLATE_DIR = path.join(__dirname, "..", "templates", "nevermore-plugin-ts");
+
+console.log(eaobird)
+console.log()
+console.log()
+console.log("Create Nevermore Plugin - A project by the Edgar Allan Ohms, FRC Team 5276")
+console.log()
+console.log()
 
 inquirer
   .prompt([
@@ -107,8 +115,8 @@ async function writeJSONToFolder(outPath, packageName, description, author, emai
   let nevermoreJSONPath = path.join(outPath, "nevermore.json");
   let packageJSONPath = path.join(outPath, "package.json")
 
-  await fs.writeFile(nevermoreJSONPath, generateNevermoreJSON(packageName, author, email, url, pluginType, permissions));
-  await fs.writeFile(packageJSONPath, generatePackageJSON(packageName, author, description, isTypescript));
+  await fs.promises.writeFile(nevermoreJSONPath, generateNevermoreJSON(packageName, author, email, url, pluginType, permissions));
+  await fs.promises.writeFile(packageJSONPath, generatePackageJSON(packageName, author, description, isTypescript));
 
   if (runNPMInstall) {
     let child = exec("npm i --cwd " + outPath + " --prefix " + outPath);
