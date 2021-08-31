@@ -1,6 +1,6 @@
 {
   "name": "@nevermore-fms/create-plugin",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Nevermore's plugin generator",
   "main": "src/index.js",
   "scripts": {

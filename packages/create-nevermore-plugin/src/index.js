@@ -150,7 +150,6 @@ function generateNevermoreJSON(name, author, email, url, pluginType, permissions
     permissions,
     pluginPath: "dist/plugin.bundle.js",
     frontendPath: "dist/frontend.bundle.js",
-    hasFrontend: true,
     enabled: true
   }, null, "\t");
 }
@@ -166,22 +165,21 @@ function generatePackageJSON(name, author, description, isTypescript) {
       scripts: {
         "build-js-dev": "webpack --mode=development",
         "build-js": "webpack --mode=production",
-        deploy: "npm run build-js && nevermore-scripts deploy",
+        "deploy": "npm run build-js && nevermore-scripts deploy",
         "deploy-dev": "npm run build-js-dev && nevermore-scripts deploy",
         "run-local": "npm run build-js-dev && nevermore-scripts develop",
-        "build": "npm run build-js && cp nevermore.json dist/nevermore.json && cp README.md dist/README.md && cd dist && bestzip plugin.zip *",
+        "build": "npm run build-js",
         "log": "nevermore-scripts log",
-        develop: "nodemon",
+        "develop": "nodemon",
       },
       devDependencies: {
         "@types/react": "^17.0.11",
         "@nevermore-fms/scripts": "^0.1.1",
         "@nevermore-fms/plugin-types": "^0.1.0",
-        nodemon: "2.0.4",
-        bestzip: "2.2.0",
+        "nodemon": "2.0.4",
         "ts-loader": "^9.2.3",
-        typescript: "^4.3.4",
-        webpack: "^5.42.0",
+        "typescript": "^4.3.4",
+        "webpack": "^5.42.0",
         "webpack-cli": "^4.7.2",
       },
       dependencies: {
