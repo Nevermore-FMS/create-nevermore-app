@@ -122,7 +122,7 @@ async function writeJSONToFolder(outPath, packageName, description, author, emai
     let child = exec("npm i --cwd " + outPath + " --prefix " + outPath);
 
     child.on('exit', function (code, signal) {
-      console.log(`The worker ${packageName} has been created at "${outPath}"!`)
+      console.log(`The plugin ${packageName} has been created at "${outPath}"!`)
     });
 
     child.on('error', function (err) {
@@ -195,20 +195,19 @@ function generatePackageJSON(name, author, description, isTypescript) {
       scripts: {
         "build-js-dev": "webpack --mode=development",
         "build-js": "webpack --mode=production",
-        deploy: "npm run build-js && nevermore-scripts deploy",
+        "deploy": "npm run build-js && nevermore-scripts deploy",
         "deploy-dev": "npm run build-js-dev && nevermore-scripts deploy",
         "run-local": "npm run build-js-dev && nevermore-scripts develop",
-        "build": "npm run build-js && cp nevermore.json dist/nevermore.json && cp README.md dist/README.md && cd dist && bestzip plugin.zip *",
+        "build": "npm run build-js",
         "log": "nevermore-scripts log",
-        develop: "nodemon",
+        "develop": "nodemon",
       },
       devDependencies: {
         "@types/react": "^17.0.11",
         "@nevermore-fms/scripts": "^0.1.1",
         "@nevermore-fms/plugin-types": "^0.1.0",
-        nodemon: "2.0.4",
-        bestzip: "2.2.0",
-        webpack: "^5.42.0",
+        "nodemon": "2.0.4",
+        "webpack": "^5.42.0",
         "webpack-cli": "^4.7.2",
       },
       dependencies: {
