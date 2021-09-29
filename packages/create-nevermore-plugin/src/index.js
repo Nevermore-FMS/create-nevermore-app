@@ -8,7 +8,6 @@ const path = require("path");
 const packageNameRegex = require("package-name-regex");
 const fse = require("fs-extra");
 const fs = require("fs");
-const { exec } = require("child_process");
 
 const JS_TEMPLATE_DIR = path.join(__dirname, "..", "templates", "nevermore-plugin");
 const TS_TEMPLATE_DIR = path.join(__dirname, "..", "templates", "nevermore-plugin-ts");
@@ -77,18 +76,13 @@ inquirer
       name: "language",
       message: "What language do you want to use?",
       choices: ["Javascript (JS)", "Typescript (TS)"],
-    },
-    {
-      type: "confirm",
-      name: "runNPMInstall",
-      message: "Would you like to run `npm install` after this plugin is created?"
     }
   ])
   .then((answers) => {
     let isTypescript = answers.language == "Typescript (TS)";
     let outPath = path.join(".", answers.name)
 
-    const writeArgs = [outPath, answers.name, answers.description, answers.author, answers.email, answers.url, answers.pluginType, answers.permissions, isTypescript, answers.runNPMInstall]
+    const writeArgs = [outPath, answers.name, answers.description, answers.author, answers.email, answers.url, answers.pluginType, answers.permissions, isTypescript]
 
     if (isTypescript) {
       fse.copy(TS_TEMPLATE_DIR, outPath, async function (err) {
@@ -111,32 +105,14 @@ inquirer
     }
   });
 
-async function writeJSONToFolder(outPath, packageName, description, author, email, url, pluginType, permissions, isTypescript, runNPMInstall) {
+async function writeJSONToFolder(outPath, packageName, description, author, email, url, pluginType, permissions, isTypescript) {
   let nevermoreJSONPath = path.join(outPath, "nevermore.json");
   let packageJSONPath = path.join(outPath, "package.json")
 
   await fs.promises.writeFile(nevermoreJSONPath, generateNevermoreJSON(packageName, author, email, url, pluginType, permissions));
   await fs.promises.writeFile(packageJSONPath, generatePackageJSON(packageName, author, description, isTypescript));
 
-  if (runNPMInstall) {
-    let child = exec("npm i --cwd " + outPath + " --prefix " + outPath);
-
-    child.on('exit', function (code, signal) {
-      console.log(`The plugin ${packageName} has been created at "${outPath}"!`)
-    });
-
-    child.on('error', function (err) {
-      console.log(err)
-    });
-
-    child.stdout.on('data', (data) => {
-      console.log(data);
-    });
-
-    child.stderr.on('data', (data) => {
-      console.error(data);
-    });
-  }
+  console.log("Please run 'npm install' within '" + packageName + "' to begin developing.")
 }
 
 
@@ -174,8 +150,8 @@ function generatePackageJSON(name, author, description, isTypescript) {
       },
       devDependencies: {
         "@types/react": "^17.0.11",
-        "@nevermore-fms/scripts": "^0.1.1",
-        "@nevermore-fms/plugin-types": "^0.1.0",
+        "@nevermore-fms/scripts": "^0.2.0",
+        "@nevermore-fms/plugin-types": "^0.2.0",
         "nodemon": "2.0.4",
         "ts-loader": "^9.2.3",
         "typescript": "^4.3.4",
@@ -204,8 +180,8 @@ function generatePackageJSON(name, author, description, isTypescript) {
       },
       devDependencies: {
         "@types/react": "^17.0.11",
-        "@nevermore-fms/scripts": "^0.1.1",
-        "@nevermore-fms/plugin-types": "^0.1.0",
+        "@nevermore-fms/scripts": "^0.2.0",
+        "@nevermore-fms/plugin-types": "^0.2.0",
         "nodemon": "2.0.4",
         "webpack": "^5.42.0",
         "webpack-cli": "^4.7.2",
