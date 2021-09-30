@@ -151,7 +151,7 @@ function generatePackageJSON(name, author, description, isTypescript) {
       devDependencies: {
         "@types/react": "^17.0.11",
         "@nevermore-fms/scripts": "^0.2.0",
-        "@nevermore-fms/plugin-types": "^0.2.0",
+        "@nevermore-fms/plugin-types": "^0.2.1",
         "nodemon": "2.0.4",
         "ts-loader": "^9.2.3",
         "typescript": "^4.3.4",
@@ -181,7 +181,7 @@ function generatePackageJSON(name, author, description, isTypescript) {
       devDependencies: {
         "@types/react": "^17.0.11",
         "@nevermore-fms/scripts": "^0.2.0",
-        "@nevermore-fms/plugin-types": "^0.2.0",
+        "@nevermore-fms/plugin-types": "^0.2.1",
         "nodemon": "2.0.4",
         "webpack": "^5.42.0",
         "webpack-cli": "^4.7.2",
